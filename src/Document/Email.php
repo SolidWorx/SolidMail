@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Document;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Types\Type;
 
@@ -17,6 +19,14 @@ class Email
 
     #[MongoDB\Field(type: Type::STRING)]
     protected string $message;
+
+    #[MongoDB\Field(type: Type::DATE_IMMUTABLE)]
+    protected DateTimeInterface $dateReceived;
+
+    public function __construct()
+    {
+        $this->dateReceived = new DateTimeImmutable();
+    }
 
     public function getInbox(): Inbox
     {

@@ -1,0 +1,14 @@
+{% extends 'layout/app.html.twig' %}
+
+{% block title %}
+    Inboxes
+{% endblock title %}
+
+{% block content %}
+    <div class="alert alert-info">
+        An inbox is a place where you can receive messages from your applications, either for testing or as a catch-all to ensure emails are not sent out in a dev or staging environment
+        <br />
+        You can create as many inboxes as you want, typically one per application.
+    </div>
+    {{ component('inbox_list') }}
+{% endblock content %}

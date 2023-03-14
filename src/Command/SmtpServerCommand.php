@@ -47,6 +47,14 @@ class SmtpServerCommand extends Command
 
         $plainTextServer = new SocketServer('0.0.0.0:25', [], $loop);
 
+        $plainTextServer->on('error', function (\Throwable $e) use ($output) {
+            $output->writeln($e->getMessage());
+        });
+
+        $plainTextServer->on('close', function () use ($output) {
+            $output->writeln('Server closed');
+        });
+
         $plainTextServer->on('connection', $this->handleConnection($output));
 
         $loop->run();
@@ -62,7 +70,7 @@ class SmtpServerCommand extends Command
                 $this->clients->attach($conn, ['authenticated' => false, 'status' => '']);
             }
 
-            //$output->writeln('Connection from ' . $conn->getRemoteAddress());
+            $output->writeln('Connection from ' . $conn->getRemoteAddress());
 
             $conn->write("220 mail.example.com ESMTP\r\n");
 
@@ -148,17 +156,20 @@ class SmtpServerCommand extends Command
 
             $conn->on('close', function () use ($output, $conn) {
                 $inbox = $this->getClientData($conn, 'inbox');
+                assert($inbox instanceof Inbox || $inbox === null);
                 $message = $this->getClientData($conn, 'message');
 
                 if ($inbox && $message) {
                     $email = new Email();
                     $email->setMessage($message);
-                    $email->setInbox($inbox);
+
+                    $inbox->addMessage($email);
+
                     $this->dm->persist($email);
                     $this->dm->flush();
                 }
 
-                //$output->writeln('Connection closed');
+                $output->writeln('Connection closed');
             });
         };
     }

@@ -1,0 +1,13 @@
+<div {{ attributes }}>
+    <ul class="list-group list-group-flush">
+        {% for inbox in this.inboxes %}
+            <li class="list-group-item d-flex justify-content-between align-items-center" style="border: none">
+                <a href="{{ path('app_list_emails', {'id': inbox.id}) }}" style="text-decoration: none">
+                    <i class="fa-solid fa-inbox align-text-bottom"></i>
+                    {{ inbox }}
+                </a>
+                <span class="badge bg-primary rounded-pill">{{ inbox.messages|length }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

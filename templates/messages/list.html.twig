@@ -1,0 +1,25 @@
+{% extends 'layout/app.html.twig' %}
+
+{% block title %}
+    {{ inbox.name }} - Inbox
+{% endblock %}
+
+{% block content %}
+    <div class="inbox-body">
+        <div class="card mb-4">
+            <div class="card-header" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <h6 class="card-title mb-0">
+                    <i class="fa-solid fa-cogs"></i>
+                    SMTP Credentials
+                    <i class="fa-solid fa-caret-down"></i>
+                </h6>
+            </div>
+            <div class="card-body collapse" id="collapseExample">
+                {% include 'inbox/credentials.html.twig' %}
+            </div>
+        </div>
+
+        {{ component('inbox_messages', { inboxId: inbox.id }) }}
+    </div>
+{% endblock content %}
+

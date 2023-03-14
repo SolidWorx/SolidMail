@@ -1,0 +1,17 @@
+@import 'variables';
+
+.text-muted {
+    color: #ADB5BD !important;
+}
+
+.btn-primary {
+    color: #FFFFFF !important;
+}
+
+#sidebarMenu {
+    .list-group-item {
+        a {
+            color: #FFFFFF !important;
+        }
+    }
+}

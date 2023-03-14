@@ -24,13 +24,16 @@ class TestEmailCommand extends Command
     {
         $mail = new Email();
         $mail->to('pierre@pcservice.co.za')
-            ->subject('Test Email')
+            ->subject('Test Email ' . time())
             ->html('<h1>Test Email</h1>')
-            ->from('test@pcservice.co.za')
+            ->from('Some Person <test@pcservice.co.za>')
         ;
+
+        // $mail->attachFromPath(__FILE__);
 
         for ($i = 0; $i < 100000; $i++) {
             $this->mailer->send($mail);
+            break;
         }
 
         exit;
