@@ -86,6 +86,8 @@ class SmtpServerCommand extends Command
                     //$conn->write("250-STARTTLS\r\n");
                     $conn->write("250-AUTH LOGIN\r\n");
                     $conn->write("250 HELP\r\n");
+                } else if (str_starts_with($data, 'NOOP')) {
+                    $conn->write("250 OK\r\n");
                 } else if (str_starts_with($data, 'STARTTLS')) {
                     $conn->write("220 Ready to start TLS\r\n");
                 } else if (str_starts_with($data, 'AUTH PLAIN')) {
