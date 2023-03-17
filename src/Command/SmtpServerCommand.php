@@ -96,6 +96,10 @@ class SmtpServerCommand extends Command
                 } else if (str_starts_with($data, 'MAIL FROM')) {
                     $conn->write("250 OK\r\n");
                 } else if (str_starts_with($data, 'RCPT TO')) {
+                    $recipients = $this->getClientData($conn, 'recipients');
+                    $recipient = trim(substr($data, 8));
+                    $recipients[] = $recipient;
+                    $this->setClientData($conn, ['recipients' => $recipients]);
                     $conn->write("250 OK\r\n");
                 } else if (str_starts_with($data, 'DATA')) {
                     $this->setClientData($conn, ['status' => 'DATA']);
@@ -162,6 +166,7 @@ class SmtpServerCommand extends Command
                 if ($inbox && $message) {
                     $email = new Email();
                     $email->setMessage($message);
+                    $email->setRecipients($this->getClientData($conn, 'recipients') ?? []);
 
                     $inbox->addMessage($email);
 

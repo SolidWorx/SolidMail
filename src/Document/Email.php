@@ -20,6 +20,9 @@ class Email
     #[MongoDB\Field(type: Type::STRING)]
     protected string $message;
 
+    #[MongoDB\Field(type: Type::COLLECTION)]
+    protected array $recipients;
+
     #[MongoDB\Field(type: Type::DATE_IMMUTABLE)]
     protected DateTimeInterface $dateReceived;
 
@@ -50,5 +53,15 @@ class Email
         $this->message = $message;
 
         return $this;
+    }
+
+    public function getRecipients(): array
+    {
+        return $this->recipients;
+    }
+
+    public function setRecipients(array $recipients): void
+    {
+        $this->recipients = $recipients;
     }
 }
