@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Document\User;
 use App\Form\RegistrationType;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\MongoDBException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 
 #[Route('/register', name: 'app_register')]
 class RegisterController extends AbstractController
@@ -17,6 +20,8 @@ class RegisterController extends AbstractController
     public function __construct(
         private readonly DocumentManager $dm,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UserAuthenticatorInterface $userAuthenticator,
+        private readonly AuthenticatorInterface $authenticator,
     ) {
 
     }
@@ -35,13 +40,19 @@ class RegisterController extends AbstractController
 
             $this->dm->persist($user);
 
-            $this->dm->flush();
+            try {
+                $this->dm->flush();
+            } catch (MongoDBException $e) {
+                $this->addFlash('error', 'An error occurred while trying to register your account. Please try again later.');
 
-            return $this->redirectToRoute('app_list_inboxes');
+                return $this->redirectToRoute('app_register');
+            }
+
+            return $this->userAuthenticator->authenticateUser($user, $this->authenticator, $request);
         }
 
         return $this->render('register/index.html.twig', [
-            'form' => $form
+            'form' => $form->createView()
         ]);
     }
 }

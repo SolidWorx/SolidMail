@@ -3,38 +3,107 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+<div class="container-fluid h-100 login">
+    <div class="row h-100">
+        <div class="col col-8 bg-light d-flex justify-content-center align-items-center">
+            <img src="{{ asset('img/login-bg.svg') }}" width="500" height="500" alt="Login Background">
         </div>
-    {% endif %}
+        <div class="col col-4 d-flex align-items-center">
+            <form method="post" class="flex-fill mx-4 px-4">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
 
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                {% for type, messages in app.flashes %}
+                    <div class="alert alert-{{ type }}">
+                        {{ messages|join('<br />') }}
+                    </div>
+                {% endfor %}
 
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
+                <h1 class="h3 mb-3 font-weight-normal">Welcome to SolidMail</h1>
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
+                <p>
+                    <small>
+                        Log into your existing account to access your inboxes.
+                    </small>
+                </p>
+
+                <div class="mb-4">
+                    <label for="inputEmail">Email</label>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                        <input
+                                type="email"
+                                value="{{ last_username }}"
+                                name="_username"
+                                id="inputEmail"
+                                class="form-control"
+                                autocomplete="email"
+                                required
+                                autofocus
+                                aria-describedby="basic-addon1"
+                                placeholder="you@email.com"
+                        >
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <label for="inputPassword">Password</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input
+                                type="password"
+                                name="_password"
+                                id="inputPassword"
+                                class="form-control"
+                                autocomplete="current-password"
+                                required
+                                placeholder="Password"
+                                aria-label="Password"
+                                aria-describedby="basic-addon2"
+                        >
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                {#
+                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                See https://symfony.com/doc/current/security/remember_me.html
+                #}
+
+                <div class="d-flex justify-content-between mb-3 my-2">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Remember me
+                    </label>
+                    <a href="#">
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-lg btn-primary" type="submit">
+                        Sign in
+                    </button>
+                </div>
+
+                <div class="my-4">
+                    No account yet?
+                    <a href="{{ path('app_register') }}">
+                        Register now
+                    </a>
+                </div>
+            </form>
         </div>
-    #}
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+    </div>
+</div>
 {% endblock %}

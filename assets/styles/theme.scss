@@ -1,4 +1,5 @@
 @import 'variables';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;1,400&display=swap');
 
 .text-muted {
     color: #ADB5BD !important;
@@ -14,4 +15,15 @@
             color: #FFFFFF !important;
         }
     }
+}
+
+.login {
+    .image-container {
+        background: #EEF5F9;
+    }
+}
+
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
 }

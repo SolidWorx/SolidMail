@@ -13,7 +13,7 @@ $theme-colors: (
 );
 */
 
-$theme-colors: (
+/*$theme-colors: (
         "light":      #2E619A,
         "dark":       #171138,
         "primary":    #1a8bc9,
@@ -22,6 +22,28 @@ $theme-colors: (
         "success":    #00a75a,
         "warning":    #e6cb00,
         "danger":     #f60005,
+);*/
+
+/*$theme-colors: (
+        "light":      #EEF5F9,
+        "dark":       #171138,
+        "primary":    #9C5DF9,
+        "secondary":  #164e70,
+        "info":       #1a8bc9,
+        "success":    #00a75a,
+        "warning":    #e6cb00,
+        "danger":     #f60005,
+);*/
+
+$theme-colors: (
+        "primary":    #9C5DF9,
+        "secondary":  #1A8BC9,
+        "light":      #EEF5F9,
+        "dark":       #171138,
+        "info":       #34B0F3,
+        "success":    #00A75A,
+        "warning":    #E6CB00,
+        "danger":     #F60005,
 );
 
 $list-group-bg: transparent;

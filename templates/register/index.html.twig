@@ -1,17 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RegisterController!{% endblock %}
+{% block title %}Register!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">Register</button>
-    {{ form_end(form) }}
-</div>
+    <div class="container-fluid h-100 login">
+        <div class="row h-100 bg-light">
+            <div class="col col-4 d-flex justify-content-center align-items-center">
+                <img src="{{ asset('img/login-bg.svg') }}" width="500" height="500" alt="Login Background">
+            </div>
+            <div class="col col-4 d-flex align-items-center">
+                <div class="flex-fill">
+                    <h1 class="h3 mb-3 font-weight-normal">Register a new account</h1>
+                    <p>
+                        <small>
+                            It's 100% free! No credit card required.<br />
+                            Create unlimited inboxes and receive unlimited emails.
+                        </small>
+                    </p>
+                    <div class="card">
+                        <div class="card-body p-4">
+                            {{ form_start(form) }}
+                            {{ form_widget(form) }}
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" type="submit">
+                                    Register
+                                </button>
+                            </div>
+                            {{ form_end(form) }}
+                            <div class="my-4">
+                                Already have an account yet?
+                                <a href="{{ path('app_login') }}">
+                                    Login now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

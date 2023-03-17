@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Document;
 
+use App\Validator\UniqueUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
@@ -21,6 +22,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[MongoDB\UniqueIndex()]
     #[Assert\NotBlank()]
     #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
+    #[UniqueUser()]
     protected string $email;
 
     #[MongoDB\Field(type: Type::STRING)]
