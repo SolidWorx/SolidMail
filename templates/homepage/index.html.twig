@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Email Testing & Analysis - SolidMail</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="SolidMail, email testing, SMTP server, email analysis, email preview, real-time error detection, device compatibility, header inspection, collaboration, email templates, email optimization, deliverability" name="keywords">
+    <meta content="SolidMail offers seamless email testing, comprehensive email analysis, and real-time error detection for an improved email experience. Sign up now for free!" name="description">
+
+    <meta name="robots" content="index, follow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    <style>
+        :root {
+            --primary: #4761FF;
+            --secondary: #555555;
+            --light: #F1F3FA;
+            --dark: #1C2035;
+        }
+
+        .fw-medium {
+            font-weight: 500;
+        }
+
+        #spinner {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .5s ease-out, visibility 0s linear .5s;
+            z-index: 99999;
+        }
+
+        #spinner.show {
+            transition: opacity .5s ease-out, visibility 0s linear 0s;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .btn {
+            transition: .5s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            color: var(--light);
+        }
+
+        .btn-square {
+            width: 38px;
+            height: 38px;
+        }
+
+        .btn-square {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: normal;
+        }
+
+        .sticky-top {
+            top: -100px;
+            transition: .5s;
+        }
+
+        .navbar .navbar-nav .nav-link {
+            margin-right: 35px;
+            padding: 25px 0;
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .navbar .navbar-nav .nav-link:hover,
+        .navbar .navbar-nav .nav-link.active {
+            color: var(--primary);
+        }
+
+
+        @media (max-width: 991.98px) {
+            .navbar .navbar-nav .nav-link  {
+                margin-right: 0;
+                padding: 10px 0;
+            }
+
+            .navbar .navbar-nav {
+                margin-top: 15px;
+                border-top: 1px solid #EEEEEE;
+            }
+        }
+
+        .carousel-caption {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, .1);
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            #header-carousel .carousel-item {
+                position: relative;
+                min-height: 450px;
+            }
+
+            #header-carousel .carousel-item img {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .page-header .breadcrumb-item+.breadcrumb-item::before {
+            color: var(--light);
+        }
+
+        .page-header .breadcrumb-item,
+        .page-header .breadcrumb-item a {
+            font-size: 18px;
+            color: var(--light);
+        }
+
+        .service-item .service-text {
+            position: relative;
+            width: 100%;
+            top: 0;
+            left: 0;
+            text-align: center;
+            background: #FFFFFF;
+            box-shadow: 0 0 45px rgba(0, 0, 0, .06);
+            transition: .5s;
+            z-index: 2;
+        }
+
+        .service-item .service-text h5 {
+            transition: .5s;
+        }
+
+        .copyright {
+            color: #B0B9AE;
+        }
+
+        .copyright {
+            background: #111111;
+        }
+
+        .copyright a:hover {
+            color: var(--primary) !important;
+        }
+    </style>
+</head>
+
+<body>
+<div id="spinner"
+     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+</div>
+
+
+<div class="container-fluid bg-dark sticky-top">
+    <div class="container">
+        <nav class="navbar navbar-expand bg-dark navbar-light p-lg-0">
+            <a href="{{ path('app_homepage') }}" class="navbar-brand d-lg-none">
+                <h2 class="fw-bold m-0">SolidMail</h2>
+            </a>
+            <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+                    <a href="{{ path('app_login') }}" class="text-white nav-item nav-link active">Login</a>
+                </div>
+                <div class="ms-auto d-none d-lg-block">
+                    <a href="{{ path('app_register') }}" class="btn btn-primary rounded-pill py-2 px-3">Sign-up now</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid px-0 mb-5">
+    <div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="w-100" src="{{ asset('img/home-bg.png') }}" alt="SolidMail Email Testing Background">
+                <div class="carousel-caption">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-lg-7 text-start">
+                                <p class="fs-4 text-white animated slideInRight">Welcome to
+                                    <strong>SolidMail</strong>
+                                </p>
+                                <h1 class="display-1 text-white mb-4 animated slideInRight">Email Testing, Simplified</h1>
+                                <a href="{{ path('app_register') }}"
+                                   class="btn btn-primary rounded-pill py-3 px-5 animated slideInRight">Sign-up now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-0 feature-row">
+            <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
+                <div class="feature-item border h-100 p-5 d-flex flex-column align-items-center">
+                    <div class="btn-square bg-light rounded-circle mb-4" style="width: 64px; height: 64px;">
+                        <i class="fa-solid fa-envelope-circle-check fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="mb-3">Seamless Email Testing</h5>
+                    <p class="mb-0">
+                        SolidMail streamlines your email testing process with an intuitive online SMTP server,
+                        making it easy to catch issues and perfect your emails before deployment.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.3s">
+                <div class="feature-item border h-100 p-5 d-flex flex-column align-items-center">
+                    <div class="btn-square bg-light rounded-circle mb-4" style="width: 64px; height: 64px;">
+                        <i class="fa-solid fa-chart-area fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="mb-3">Comprehensive Analysis</h5>
+                    <p class="mb-0">
+                        Inspect and analyze every aspect of your emails,
+                        including headers and content, to ensure consistent delivery and presentation across various email clients and devices.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.5s">
+                <div class="feature-item border h-100 p-5 d-flex flex-column align-items-center">
+                    <div class="btn-square bg-light rounded-circle mb-4" style="width: 64px; height: 64px;">
+                        <i class="fa-solid fa-universal-access fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="mb-3">Accessible & User-Friendly</h5>
+                    <p class="mb-0">
+                        SolidMail's clean and modern interface is designed for users of all skill levels,
+                        so you can focus on testing and improving your emails without a steep learning curve.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.7s">
+                <div class="feature-item border h-100 p-5 d-flex flex-column align-items-center">
+                    <div class="btn-square bg-light rounded-circle mb-4" style="width: 64px; height: 64px;">
+                        <i class="fa-solid fa-server fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="mb-3">Secure & Reliable Platform</h5>
+                    <p class="mb-0">
+                        Trust SolidMail's robust infrastructure to provide a dependable environment
+                        for testing your emails, safeguarding your data and maintaining privacy throughout the process.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <h2 class="display-5 mb-5 text-primary">Features</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-solid fa-eye fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Instant Email Preview</h5>
+                            <p class="mb-0">View and analyze your emails instantly within the platform for quick and efficient testing.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-solid fa-magnifying-glass fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Advanced Header Inspection</h5>
+                            <p class="mb-0">SolidMail provides in-depth inspection of email headers, ensuring optimal email authentication and deliverability.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-solid fa-cloud fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Free hosted option</h5>
+                            <p class="mb-0">
+                                Sign-up for an account and use all the available features for free. No credit card required.
+                            </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-brands fa-github fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Open Source</h5>
+                            <p class="mb-0">
+                                SolidMail is open source, so you can host it on your own infrastructure or contribute to the project.
+                            </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-solid fa-envelope-open-text fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Catch all emails</h5>
+                            <p class="mb-0">
+                                Catch all emails in your development or staging environments and avoid sending emails to real users.
+                            </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item position-relative h-100">
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square bg-light rounded-circle mx-auto mb-4"
+                             style="width: 64px; height: 64px;">
+                            <i class="fa-solid fa-inbox fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="mb-3">Multiple inboxes</h5>
+                            <p class="mb-0">
+                                Create multiple inboxes to receive emails from different sources or projects and keep them organized.
+                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid copyright py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                &copy; <a class="fw-medium text-light" href="{{ path('app_homepage') }}">SolidMail</a>, All Right Reserved.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<script>
+/*! WOW wow.js - v1.3.0 - 2016-10-04
+* https://wowjs.uk
+* Copyright (c) 2016 Thomas Grainger; Licensed MIT */!function(a,b){if("function"==typeof define&&define.amd)define(["module","exports"],b);else if("undefined"!=typeof exports)b(module,exports);else{var c={exports:{}};b(c,c.exports),a.WOW=c.exports}}(this,function(a,b){"use strict";function c(a,b){if(!(a instanceof b))throw new TypeError("Cannot call a class as a function")}function d(a,b){return b.indexOf(a)>=0}function e(a,b){for(var c in b)if(null==a[c]){var d=b[c];a[c]=d}return a}function f(a){return/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(a)}function g(a){var b=arguments.length<=1||void 0===arguments[1]?!1:arguments[1],c=arguments.length<=2||void 0===arguments[2]?!1:arguments[2],d=arguments.length<=3||void 0===arguments[3]?null:arguments[3],e=void 0;return null!=document.createEvent?(e=document.createEvent("CustomEvent"),e.initCustomEvent(a,b,c,d)):null!=document.createEventObject?(e=document.createEventObject(),e.eventType=a):e.eventName=a,e}function h(a,b){null!=a.dispatchEvent?a.dispatchEvent(b):b in(null!=a)?a[b]():"on"+b in(null!=a)&&a["on"+b]()}function i(a,b,c){null!=a.addEventListener?a.addEventListener(b,c,!1):null!=a.attachEvent?a.attachEvent("on"+b,c):a[b]=c}function j(a,b,c){null!=a.removeEventListener?a.removeEventListener(b,c,!1):null!=a.detachEvent?a.detachEvent("on"+b,c):delete a[b]}function k(){return"innerHeight"in window?window.innerHeight:document.documentElement.clientHeight}Object.defineProperty(b,"__esModule",{value:!0});var l,m,n=function(){function a(a,b){for(var c=0;c<b.length;c++){var d=b[c];d.enumerable=d.enumerable||!1,d.configurable=!0,"value"in d&&(d.writable=!0),Object.defineProperty(a,d.key,d)}}return function(b,c,d){return c&&a(b.prototype,c),d&&a(b,d),b}}(),o=window.WeakMap||window.MozWeakMap||function(){function a(){c(this,a),this.keys=[],this.values=[]}return n(a,[{key:"get",value:function(a){for(var b=0;b<this.keys.length;b++){var c=this.keys[b];if(c===a)return this.values[b]}}},{key:"set",value:function(a,b){for(var c=0;c<this.keys.length;c++){var d=this.keys[c];if(d===a)return this.values[c]=b,this}return this.keys.push(a),this.values.push(b),this}}]),a}(),p=window.MutationObserver||window.WebkitMutationObserver||window.MozMutationObserver||(m=l=function(){function a(){c(this,a),"undefined"!=typeof console&&null!==console&&(console.warn("MutationObserver is not supported by your browser."),console.warn("WOW.js cannot detect dom mutations, please call .sync() after loading new content."))}return n(a,[{key:"observe",value:function(){}}]),a}(),l.notSupported=!0,m),q=window.getComputedStyle||function(a){var b=/(\-([a-z]){1})/g;return{getPropertyValue:function(c){"float"===c&&(c="styleFloat"),b.test(c)&&c.replace(b,function(a,b){return b.toUpperCase()});var d=a.currentStyle;return(null!=d?d[c]:void 0)||null}}},r=function(){function a(){var b=arguments.length<=0||void 0===arguments[0]?{}:arguments[0];c(this,a),this.defaults={boxClass:"wow",animateClass:"animated",offset:0,mobile:!0,live:!0,callback:null,scrollContainer:null,resetAnimation:!0},this.animate=function(){return"requestAnimationFrame"in window?function(a){return window.requestAnimationFrame(a)}:function(a){return a()}}(),this.vendors=["moz","webkit"],this.start=this.start.bind(this),this.resetAnimation=this.resetAnimation.bind(this),this.scrollHandler=this.scrollHandler.bind(this),this.scrollCallback=this.scrollCallback.bind(this),this.scrolled=!0,this.config=e(b,this.defaults),null!=b.scrollContainer&&(this.config.scrollContainer=document.querySelector(b.scrollContainer)),this.animationNameCache=new o,this.wowEvent=g(this.config.boxClass)}return n(a,[{key:"init",value:function(){this.element=window.document.documentElement,d(document.readyState,["interactive","complete"])?this.start():i(document,"DOMContentLoaded",this.start),this.finished=[]}},{key:"start",value:function(){var a=this;if(this.stopped=!1,this.boxes=[].slice.call(this.element.querySelectorAll("."+this.config.boxClass)),this.all=this.boxes.slice(0),this.boxes.length)if(this.disabled())this.resetStyle();else for(var b=0;b<this.boxes.length;b++){var c=this.boxes[b];this.applyStyle(c,!0)}if(this.disabled()||(i(this.config.scrollContainer||window,"scroll",this.scrollHandler),i(window,"resize",this.scrollHandler),this.interval=setInterval(this.scrollCallback,50)),this.config.live){var d=new p(function(b){for(var c=0;c<b.length;c++)for(var d=b[c],e=0;e<d.addedNodes.length;e++){var f=d.addedNodes[e];a.doSync(f)}});d.observe(document.body,{childList:!0,subtree:!0})}}},{key:"stop",value:function(){this.stopped=!0,j(this.config.scrollContainer||window,"scroll",this.scrollHandler),j(window,"resize",this.scrollHandler),null!=this.interval&&clearInterval(this.interval)}},{key:"sync",value:function(){p.notSupported&&this.doSync(this.element)}},{key:"doSync",value:function(a){if("undefined"!=typeof a&&null!==a||(a=this.element),1===a.nodeType){a=a.parentNode||a;for(var b=a.querySelectorAll("."+this.config.boxClass),c=0;c<b.length;c++){var e=b[c];d(e,this.all)||(this.boxes.push(e),this.all.push(e),this.stopped||this.disabled()?this.resetStyle():this.applyStyle(e,!0),this.scrolled=!0)}}}},{key:"show",value:function(a){return this.applyStyle(a),a.className=a.className+" "+this.config.animateClass,null!=this.config.callback&&this.config.callback(a),h(a,this.wowEvent),this.config.resetAnimation&&(i(a,"animationend",this.resetAnimation),i(a,"oanimationend",this.resetAnimation),i(a,"webkitAnimationEnd",this.resetAnimation),i(a,"MSAnimationEnd",this.resetAnimation)),a}},{key:"applyStyle",value:function(a,b){var c=this,d=a.getAttribute("data-wow-duration"),e=a.getAttribute("data-wow-delay"),f=a.getAttribute("data-wow-iteration");return this.animate(function(){return c.customStyle(a,b,d,e,f)})}},{key:"resetStyle",value:function(){for(var a=0;a<this.boxes.length;a++){var b=this.boxes[a];b.style.visibility="visible"}}},{key:"resetAnimation",value:function(a){if(a.type.toLowerCase().indexOf("animationend")>=0){var b=a.target||a.srcElement;b.className=b.className.replace(this.config.animateClass,"").trim()}}},{key:"customStyle",value:function(a,b,c,d,e){return b&&this.cacheAnimationName(a),a.style.visibility=b?"hidden":"visible",c&&this.vendorSet(a.style,{animationDuration:c}),d&&this.vendorSet(a.style,{animationDelay:d}),e&&this.vendorSet(a.style,{animationIterationCount:e}),this.vendorSet(a.style,{animationName:b?"none":this.cachedAnimationName(a)}),a}},{key:"vendorSet",value:function(a,b){for(var c in b)if(b.hasOwnProperty(c)){var d=b[c];a[""+c]=d;for(var e=0;e<this.vendors.length;e++){var f=this.vendors[e];a[""+f+c.charAt(0).toUpperCase()+c.substr(1)]=d}}}},{key:"vendorCSS",value:function(a,b){for(var c=q(a),d=c.getPropertyCSSValue(b),e=0;e<this.vendors.length;e++){var f=this.vendors[e];d=d||c.getPropertyCSSValue("-"+f+"-"+b)}return d}},{key:"animationName",value:function(a){var b=void 0;try{b=this.vendorCSS(a,"animation-name").cssText}catch(c){b=q(a).getPropertyValue("animation-name")}return"none"===b?"":b}},{key:"cacheAnimationName",value:function(a){return this.animationNameCache.set(a,this.animationName(a))}},{key:"cachedAnimationName",value:function(a){return this.animationNameCache.get(a)}},{key:"scrollHandler",value:function(){this.scrolled=!0}},{key:"scrollCallback",value:function(){if(this.scrolled){this.scrolled=!1;for(var a=[],b=0;b<this.boxes.length;b++){var c=this.boxes[b];if(c){if(this.isVisible(c)){this.show(c);continue}a.push(c)}}this.boxes=a,this.boxes.length||this.config.live||this.stop()}}},{key:"offsetTop",value:function(a){for(;void 0===a.offsetTop;)a=a.parentNode;for(var b=a.offsetTop;a.offsetParent;)a=a.offsetParent,b+=a.offsetTop;return b}},{key:"isVisible",value:function(a){var b=a.getAttribute("data-wow-offset")||this.config.offset,c=this.config.scrollContainer&&this.config.scrollContainer.scrollTop||window.pageYOffset,d=c+Math.min(this.element.clientHeight,k())-b,e=this.offsetTop(a),f=e+a.clientHeight;return d>=e&&f>=c}},{key:"disabled",value:function(){return!this.config.mobile&&f(navigator.userAgent)}}]),a}();b["default"]=r,a.exports=b["default"]});
+
+    (function ($) {
+        "use strict";
+
+        // Spinner
+        const spinner = function () {
+            setTimeout(function () {
+                if ($('#spinner').length > 0) {
+                    $('#spinner').removeClass('show');
+                }
+            }, 1);
+        };
+        spinner();
+
+        // Initiate the wowjs
+        new WOW().init();
+
+        // Sticky Navbar
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
+                $('.sticky-top').addClass('shadow-sm').css('top', '0px');
+            } else {
+                $('.sticky-top').removeClass('shadow-sm').css('top', '-100px');
+            }
+        });
+    })(jQuery);
+</script>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+</body>
+
+</html>
