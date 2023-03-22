@@ -1,0 +1,145 @@
+{% extends 'layout/app.html.twig' %}
+
+{% block title %}
+    {{ parsedMessage.header('subject') }} - {{ inbox.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="inbox-body">
+        <a href="{{ path('app_list_emails', {'id': inbox.id}) }}" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Back to Inbox">
+            <i class="fa-solid fa-angle-left"></i>
+            Back to Inbox
+        </a>
+
+        <div class="row mt-4 mx-0">
+            <div class="col-3">
+                <b>From</b>
+            </div>
+            <div class="col-7">
+                {{ parsedMessage.header('from') }}
+            </div>
+        </div>
+        <div class="row mx-0">
+            <div class="col-3">
+                <b>Subject</b>
+            </div>
+            <div class="col-7">
+                {{ parsedMessage.header('subject') }}
+            </div>
+        </div>
+        <div class="row mb-4 mx-0">
+            <div class="col-3">
+                <b>To</b>
+            </div>
+            <div class="col-7">
+                {{ parsedMessage.header('to') }}
+            </div>
+        </div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="html-content-tab" data-bs-toggle="tab" data-bs-target="#html-content-pane" type="button" role="tab" aria-controls="html-content-pane" aria-selected="true">
+                    HTML Content
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="text-content-tab" data-bs-toggle="tab" data-bs-target="#text-content-pane" type="button" role="tab" aria-controls="text-content-pane" aria-selected="false">
+                    Plain Text Content
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="headers-tab" data-bs-toggle="tab" data-bs-target="#headers-tab-pane" type="button" role="tab" aria-controls="headers-tab-pane" aria-selected="false">
+                    Headers
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="raw-message-tab" data-bs-toggle="tab" data-bs-target="#raw-message-pane" type="button" role="tab" aria-controls="raw-message-pane" aria-selected="false">
+                    Raw Message
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content p-4 m-0" id="myTabContent">
+            <div class="tab-pane fade show active" id="html-content-pane" role="tabpanel" aria-labelledby="html-content" tabindex="0">
+                {{ parsedMessage.getMessageBody('htmlEmbedded')|sanitize_html('app.html_content_sanitizer') }}
+            </div>
+            <div class="tab-pane fade" id="text-content-pane" role="tabpanel" aria-labelledby="text-content" tabindex="0">
+                <code class="text-black">{{ parsedMessage.messageBody|nl2br }}</code>
+            </div>
+            <div class="tab-pane fade" id="headers-tab-pane" role="tabpanel" aria-labelledby="headers-tab" tabindex="0">
+                <table class="table table-responsive table-striped">
+                    <tr>
+                        <th>RCPT TO</th>
+                        <td>
+                            {% for recipient in message.recipients %}
+                                {{ recipient }}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>MAIL FROM</th>
+                        <td>
+                            {{ message.messageFrom }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>BCC</th>
+                        <td>
+                            {% for recipient in bcc %}
+                                {{ recipient }}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% for header, value in parsedMessage.headers %}
+                        <tr>
+                            <th>{{ header|title }}</th>
+                            <td>
+                                {% if value is iterable %}
+                                    {% for v in value %}
+                                        {{ v }}<br>
+                                    {% endfor %}
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {#<div class="row m-0 p-0">
+                    <div class="col-3">
+                        <b>RCPT TO</b>
+                    </div>
+                    <div class="col-7">
+                        {% for recipient in message.recipients %}
+                            {{ recipient }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br />
+                <div class="row m-0 p-0">
+                    <div class="col-3">
+                        <b>BCC</b>
+                    </div>
+                    <div class="col-7">
+                        {% for recipient in bcc %}
+                            {{ recipient }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br />
+                {% for header, value in parsedMessage.headers %}
+                    <div class="row m-0 p-0">
+                        <div class="col-3">
+                            <b>{{ header|title }}</b>
+                        </div>
+                        <div class="col-7">
+                            {{ value }}
+                        </div>
+                    </div>
+                {% endfor %}#}
+            </div>
+            <div class="tab-pane fade" id="raw-message-pane" role="tabpanel" aria-labelledby="raw-message" tabindex="0">
+                <code class="text-black">{{ message.message|nl2br }}</code>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+

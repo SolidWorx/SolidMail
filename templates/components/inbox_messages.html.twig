@@ -6,10 +6,10 @@
         <div class="card-header">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3">
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <button type="button" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Select All">
+                    {#<button type="button" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Select All">
                         <input type="checkbox" class="form-check-input me-1" id="selectAllCheckBox">
                         <label class="form-check-label" for="selectAllCheckBox">Select All</label>
-                    </button>
+                    </button>#}
 
                     <button type="button" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Refresh" data-action="live#$render">
                         <i class=" fa-solid fa-refresh"></i>
@@ -47,13 +47,15 @@
                 <table class="table table-inbox table-hover mb-0">
                 <tbody>
                 {% for email in this.messages %}
-                    <tr class="table-secondary">
+                    <tr{% if email.unread %} class="table-secondary"{% endif %}>
                         <td class="inbox-small-cells">
                             <input type="checkbox" class="mail-checkbox">
                         </td>
                         <td class="view-message dont-show">{{ email.from }}</td>
                         <td class="view-message">
-                            {{ email.subject }}
+                            <a href="{{ path('app_view_message', {'inboxId': this.inbox.id, 'messageId': email.id}) }}">
+                                {{ email.subject }}
+                            </a>
                         </td>
                         <td class="view-message  inbox-small-cells">
                             {% if email.hasAttachments %}

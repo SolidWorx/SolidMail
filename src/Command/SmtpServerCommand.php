@@ -97,6 +97,8 @@ class SmtpServerCommand extends Command
                     $conn->write("334 VXNlcm5hbWU6\r\n");
                 } else if (str_starts_with($data, 'MAIL FROM')) {
                     $conn->write("250 OK\r\n");
+
+                    $this->setClientData($conn, ['from' => trim(substr($data, 10))]);
                 } else if (str_starts_with($data, 'RCPT TO')) {
                     $recipients = $this->getClientData($conn, 'recipients');
                     $recipient = trim(substr($data, 8));
@@ -169,6 +171,7 @@ class SmtpServerCommand extends Command
                     $email = new Email();
                     $email->setMessage($message);
                     $email->setRecipients($this->getClientData($conn, 'recipients') ?? []);
+                    $email->setMessageFrom($this->getClientData($conn, 'from') ?? '');
 
                     $inbox->addMessage($email);
 

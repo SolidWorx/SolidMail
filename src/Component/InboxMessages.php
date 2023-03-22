@@ -54,8 +54,10 @@ class InboxMessages
                 $parser->setText($email->getMessage());
 
                 return [
+                    'id' => $email->getId(),
                     'from' => $parser->getHeader('from'),
                     'to' => $parser->getHeader('to'),
+                    'unread' => $email->isUnread(),
                     'subject' => $parser->getHeader('subject'),
                     'hasAttachments' => count($parser->getAttachments()) > 0,
                     'date' => $parser->getHeader('date'),

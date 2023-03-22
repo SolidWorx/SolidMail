@@ -19,6 +19,7 @@
         "symfony/flex": "^2",
         "symfony/form": "6.2.*",
         "symfony/framework-bundle": "6.2.*",
+        "symfony/html-sanitizer": "6.2.*",
         "symfony/mailer": "6.2.*",
         "symfony/runtime": "6.2.*",
         "symfony/security-bundle": "6.2.*",
@@ -77,8 +78,10 @@
         }
     },
     "require-dev": {
+        "symfony/debug-bundle": "6.2.*",
         "symfony/maker-bundle": "^1.48",
         "symfony/stopwatch": "6.2.*",
+        "symfony/var-dumper": "6.2.*",
         "symfony/web-profiler-bundle": "6.2.*"
     }
 }
