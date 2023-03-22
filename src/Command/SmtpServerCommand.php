@@ -4,18 +4,23 @@ namespace App\Command;
 
 use App\Document\Email;
 use App\Document\Inbox;
+use Closure;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
+use React\Socket\ServerInterface;
 use React\Socket\SocketServer;
+use React\Socket\StreamEncryption;
 use SplObjectStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use function array_merge;
 use function str_ends_with;
 use function str_starts_with;
+use function stream_context_set_option;
 
 #[AsCommand(
     name: 'app:smtp-server',
@@ -24,17 +29,20 @@ class SmtpServerCommand extends Command
 {
     private SplObjectStorage $clients;
 
-    public function __construct(private readonly DocumentManager $dm)
+    public function __construct(
+        private readonly DocumentManager $dm,
+        private readonly string $projectDir,
+    )
     {
         parent::__construct();
     }
 
-    function getClientData(ConnectionInterface $conn, string $key): mixed
+    private function getClientData(ConnectionInterface $conn, string $key): mixed
     {
         return $this->clients->offsetGet($conn)[$key] ?? null;
     }
 
-    function setClientData(ConnectionInterface $conn, array $data): void
+    private function setClientData(ConnectionInterface $conn, array $data): void
     {
         $this->clients[$conn] = array_merge($this->clients->offsetGet($conn), $data);
     }
@@ -51,21 +59,18 @@ class SmtpServerCommand extends Command
             $output->writeln($e->getMessage());
         });
 
-        $plainTextServer->on('close', function () use ($output) {
+        $plainTextServer->on('close', static function () use ($output) {
             $output->writeln('Server closed');
         });
 
-        $plainTextServer->on('connection', $this->handleConnection($output));
-
-        $loop->run();
+        $plainTextServer->on('connection', $this->handleConnection($plainTextServer, $output));
 
         return Command::SUCCESS;
     }
 
-    protected function handleConnection(OutputInterface $output): \Closure
+    protected function handleConnection(ServerInterface $plainTextServer, OutputInterface $output): Closure
     {
-        return function (ConnectionInterface $conn) use ($output) {
-
+        return function (ConnectionInterface $conn) use ($plainTextServer, $output) {
             if (!$this->clients->contains($conn)) {
                 $this->clients->attach($conn, ['authenticated' => false, 'status' => '']);
             }
@@ -74,22 +79,27 @@ class SmtpServerCommand extends Command
 
             $conn->write("220 mail.example.com ESMTP\r\n");
 
-            $conn->on('data', function ($data) use ($conn, $output) {
-
-                //$output->writeln($data);
-
+            $conn->on('data', function ($data) use ($conn, $output, $plainTextServer) {
                 if (str_starts_with($data, 'EHLO')) {
                     $conn->write("250-mail.example.com\r\n");
                     $conn->write("250-8BITMIME\r\n");
                     $conn->write("250-PIPELINING\r\n");
                     $conn->write("250-SIZE 10240000\r\n");
-                    //$conn->write("250-STARTTLS\r\n");
+                    $conn->write("250-STARTTLS\r\n");
                     $conn->write("250-AUTH LOGIN\r\n");
                     $conn->write("250 HELP\r\n");
                 } else if (str_starts_with($data, 'NOOP')) {
                     $conn->write("250 OK\r\n");
                 } else if (str_starts_with($data, 'STARTTLS')) {
                     $conn->write("220 Ready to start TLS\r\n");
+
+                    $encryption = new StreamEncryption(Loop::get());
+
+                    stream_context_set_option($conn->stream, 'ssl', 'local_cert', $this->projectDir . '/config/cert/cert.pem');
+                    stream_context_set_option($conn->stream, 'ssl', 'local_pk', $this->projectDir . '/config/cert/key.pem');
+                    stream_context_set_option($conn->stream, 'ssl', 'passphrase', 'password');
+
+                    $encryption->enable($conn);
                 } else if (str_starts_with($data, 'AUTH PLAIN')) {
                     $conn->write("235 Authentication successful\r\n");
                 } else if (str_starts_with($data, 'AUTH LOGIN')) {
@@ -107,7 +117,6 @@ class SmtpServerCommand extends Command
                     $conn->write("250 OK\r\n");
                 } else if (str_starts_with($data, 'DATA')) {
                     $this->setClientData($conn, ['status' => 'DATA']);
-                    //$conn->write("354 OK\r\n");
                     $conn->write("354 Start mail input; end with <CRLF>.<CRLF>\r\n");
                 } else if (str_starts_with($data, 'QUIT')) {
                     $conn->write("221 Bye\r\n");
@@ -150,7 +159,6 @@ class SmtpServerCommand extends Command
 
                             $message = $this->getClientData($conn, 'message') . $data;
                             $this->setClientData($conn, ['message' => $message]);
-                            // $conn->write("354 Continue\r\n");
                         }
                     } else {
                         $conn->write("500 Error: command not recognized\r\n");
