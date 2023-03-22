@@ -32,6 +32,7 @@ class SmtpServerCommand extends Command
     public function __construct(
         private readonly DocumentManager $dm,
         private readonly string $projectDir,
+        private readonly string $smtpServerDomain,
     )
     {
         parent::__construct();
@@ -77,11 +78,11 @@ class SmtpServerCommand extends Command
 
             $output->writeln('Connection from ' . $conn->getRemoteAddress());
 
-            $conn->write("220 mail.example.com ESMTP\r\n");
+            $conn->write("220 {$this->smtpServerDomain} ESMTP\r\n");
 
             $conn->on('data', function ($data) use ($conn, $output, $plainTextServer) {
                 if (str_starts_with($data, 'EHLO')) {
-                    $conn->write("250-mail.example.com\r\n");
+                    $conn->write("250-{$this->smtpServerDomain}\r\n");
                     $conn->write("250-8BITMIME\r\n");
                     $conn->write("250-PIPELINING\r\n");
                     $conn->write("250-SIZE 10240000\r\n");
