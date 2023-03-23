@@ -3,8 +3,19 @@
 <html class="no-js h-100" lang="{{ locale }}">
 
 <head>
+    {% if googleAnalyticsId is not empty %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ googleAnalyticsId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '{{ googleAnalyticsId }}');
+        </script>
+    {% endif %}
+
     <meta charset="utf-8">
-    <title>{{ 'app_name'|trans }}</title>
+    <title>SolidMail</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
