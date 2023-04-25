@@ -8,10 +8,10 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-mongodb": "*",
+        "ext-mailparse": "*",
         "doctrine/mongodb-odm": "^2.5",
         "doctrine/mongodb-odm-bundle": "^4.4",
         "ocramius/proxy-manager": "*",
-        "php-imap/php-imap": "dev-master",
         "php-mime-mail-parser/php-mime-mail-parser": "^8.0",
         "react/react": "^1.3",
         "symfony/console": "6.2.*",
@@ -78,6 +78,7 @@
         }
     },
     "require-dev": {
+        "deployer/deployer": "^7.3",
         "symfony/debug-bundle": "6.2.*",
         "symfony/maker-bundle": "^1.48",
         "symfony/stopwatch": "6.2.*",
