@@ -49,12 +49,22 @@
                 {% for email in this.messages %}
                     <tr{% if email.unread %} class="table-secondary"{% endif %}>
                         <td class="inbox-small-cells">
-                            <input type="checkbox" class="mail-checkbox">
+                            <input type="checkbox" class="mail-checkbox" />
                         </td>
-                        <td class="view-message dont-show">{{ email.from }}</td>
+                        <td class="view-message dont-show">
+                            {% if email.unread %}
+                                <b>{{ email.from }}</b>
+                            {% else %}
+                                {{ email.from }}
+                            {% endif %}
+                        </td>
                         <td class="view-message">
                             <a href="{{ path('app_view_message', {'inboxId': this.inbox.id, 'messageId': email.id}) }}">
-                                {{ email.subject }}
+                                {% if email.unread %}
+                                    <b>{{ email.subject }}</b>
+                                {% else %}
+                                    {{ email.subject }}
+                                {% endif %}
                             </a>
                         </td>
                         <td class="view-message  inbox-small-cells">
@@ -62,7 +72,13 @@
                                 <i class="fa-solid fa-paperclip"></i>
                             {% endif %}
                         </td>
-                        <td class="view-message text-end">{{ email.date|date }}</td>
+                        <td class="view-message text-end">
+                            {% if email.unread %}
+                                <b>{{ email.date|date }}</b>
+                            {% else %}
+                                {{ email.date|date }}
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
